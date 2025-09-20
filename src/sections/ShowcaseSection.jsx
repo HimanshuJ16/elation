@@ -1,43 +1,10 @@
 import { useRef } from "react";
+import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import ServiceSlider from "../components/ServerSlider";
 
-// Icon components for better visual hierarchy
-const ChartIcon = () => (
-  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"/>
-    <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"/>
-  </svg>
-);
-
-const CreativeIcon = () => (
-  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd"/>
-  </svg>
-);
-
-const DistributionIcon = () => (
-  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-  </svg>
-);
-
-const PerformanceIcon = () => (
-  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-  </svg>
-);
-
-const InsightsIcon = () => (
-  <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 20 20">
-    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V4z"/>
-    <path fillRule="evenodd" d="M5 14a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd"/>
-  </svg>
-);
-
+// Icon components
 const IndustryIcon = ({ type }) => {
   const icons = {
     alcobev: (
@@ -89,16 +56,58 @@ gsap.registerPlugin(ScrollTrigger);
 
 const AppShowcase = () => {
   const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+
+  // Animation variants for Framer Motion
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { 
+      opacity: 0, 
+      y: 30,
+      scale: 0.95 
+    },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      scale: 1,
+      transition: {
+        duration: 0.6,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
+  };
+
+  const hoverVariants = {
+    hover: {
+      y: -8,
+      scale: 1.02,
+      boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      transition: {
+        duration: 0.3,
+        y: { type: "spring", stiffness: 300, damping: 20 }
+      }
+    }
+  };
 
   useGSAP(() => {
-    // Animation for the main section
+    // Section entrance
     gsap.fromTo(
       sectionRef.current,
       { opacity: 0, y: 30 },
       { opacity: 1, y: 0, duration: 1.2, ease: "power2.out" }
     );
 
-    // Animate title
+    // Title animation
     gsap.fromTo(
       ".section-title",
       { opacity: 0, y: -30 },
@@ -115,112 +124,48 @@ const AppShowcase = () => {
       }
     );
 
-    // Animate service cards with stagger
-    const serviceCards = gsap.utils.toArray('.service-card');
+    // Bento cards stagger animation
+    const bentoCards = gsap.utils.toArray('.bento-card');
     gsap.fromTo(
-      serviceCards,
+      bentoCards,
       {
-        y: 80,
+        y: 60,
         opacity: 0,
-        scale: 0.9,
-        rotationX: 45
+        scale: 0.95,
+        rotationX: 15
       },
       {
         y: 0,
         opacity: 1,
         scale: 1,
         rotationX: 0,
-        duration: 1.2,
-        stagger: 0.15,
+        duration: 0.8,
+        stagger: 0.12,
         ease: "power3.out",
         scrollTrigger: {
-          trigger: ".services-grid",
+          trigger: containerRef.current,
           start: "top bottom-=100",
         },
       }
     );
 
-    // Animate industry cards
-    const industryCards = gsap.utils.toArray('.industry-card');
-    gsap.fromTo(
-      industryCards,
-      {
-        y: 60,
-        opacity: 0,
-        scale: 0.95
-      },
-      {
-        y: 0,
-        opacity: 1,
-        scale: 1,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: ".industries-grid",
-          start: "top bottom-=80",
-        },
-      }
-    );
-
-    // Enhanced hover animations with more interactive elements
-    serviceCards.forEach(card => {
-      const icon = card.querySelector('.service-icon');
-      const backdrop = card.querySelector('.service-backdrop');
-      
-      card.addEventListener('mouseenter', () => {
-        gsap.to(card, {
-          y: -12,
-          scale: 1.03,
-          duration: 0.4,
-          ease: "power2.out"
-        });
-        
-        if (icon) {
-          gsap.to(icon, {
-            rotation: 10,
-            scale: 1.1,
-            duration: 0.4,
-            ease: "back.out(1.7)"
-          });
-        }
-      });
-      
-      card.addEventListener('mouseleave', () => {
-        gsap.to(card, {
-          y: 0,
-          scale: 1,
-          duration: 0.4,
-          ease: "power2.out"
-        });
-        
-        if (icon) {
-          gsap.to(icon, {
-            rotation: 0,
-            scale: 1,
-            duration: 0.4,
-            ease: "power2.out"
-          });
-        }
-      });
-    });
-
-    industryCards.forEach(card => {
+    // Enhanced hover interactions
+    bentoCards.forEach(card => {
       const icon = card.querySelector('.industry-icon');
       
       card.addEventListener('mouseenter', () => {
         gsap.to(card, {
-          y: -8,
-          scale: 1.05,
-          duration: 0.3,
+          y: -10,
+          scale: 1.04,
+          duration: 0.4,
           ease: "power2.out"
         });
         
         if (icon) {
           gsap.to(icon, {
-            rotation: 5,
-            scale: 1.2,
-            duration: 0.3,
+            rotation: 8,
+            scale: 1.15,
+            duration: 0.4,
             ease: "back.out(1.7)"
           });
         }
@@ -230,7 +175,7 @@ const AppShowcase = () => {
         gsap.to(card, {
           y: 0,
           scale: 1,
-          duration: 0.3,
+          duration: 0.4,
           ease: "power2.out"
         });
         
@@ -238,14 +183,14 @@ const AppShowcase = () => {
           gsap.to(icon, {
             rotation: 0,
             scale: 1,
-            duration: 0.3,
+            duration: 0.4,
             ease: "power2.out"
           });
         }
       });
     });
 
-    // Floating animation for background elements
+    // Floating background animations
     gsap.to(".floating-bg-1", {
       y: -20,
       duration: 3,
@@ -265,256 +210,330 @@ const AppShowcase = () => {
 
     gsap.to(".floating-bg-3", {
       y: -10,
-      duration: 2.5,
-      ease: "power2.inOut",
-      yoyo: true,
+      rotation: 360,
+      duration: 5,
+      ease: "none",
       repeat: -1,
       delay: 2
     });
-  }, []);
+  }, { scope: sectionRef });
+
+  const industries = [
+    { type: "alcobev", title: "Alcobev Brands", tag: "Project-Based", color: "orange", challenge: "Crowded markets where creating buzz and loyalty is difficult.", solution: "Creative campaigns, cultural activations, UGC integration, and performance marketing." },
+    { type: "podcast", title: "Podcasters", tag: "Sprint", color: "blue", challenge: "Growing reach and building a loyal listener base.", solution: "Content design, audience-specific distribution, and engagement-driven micro-campaigns." },
+    { type: "restaurant", title: "Restaurants", tag: "Sprint", color: "green", challenge: "Generating awareness and repeat customers in competitive spaces.", solution: "Campaign-led storytelling, localized activations, video/photo content, and targeted awareness ads." },
+    { type: "d2c", title: "D2C Brands", tag: "Consultancy", color: "purple", challenge: "Connecting with Gen Z through content, distribution, and ad funnels.", solution: "End-to-end marketing strategy, sharp creatives, influencer/UGC integration, and performance campaigns." },
+    { type: "legacy", title: "Legacy Brands", tag: "Retainer", color: "red", challenge: "Shifting from distribution-led growth to relevance with younger audiences.", solution: "Refreshed communication strategy, recall-first campaigns, content distribution, and loyalty micro-campaigns." },
+    { type: "authors", title: "Authors & Thought Leaders", tag: "Retainer", color: "indigo", challenge: "Building recall and credibility beyond a book launch.", solution: "Brand positioning, personal brand engines, strategic content buckets, high-converting video content, and full-funnel campaigns." },
+    { type: "doctors", title: "Doctors", tag: "Retainer", color: "teal", challenge: "Turning medical expertise into trust and consistent patient acquisition.", solution: "Audience mapping, positioning frameworks, credibility-led content, ad funnels for leads, and continuous optimization." },
+    { type: "entrepreneurs", title: "Entrepreneurs", tag: "Retainer", color: "yellow", challenge: "Lack of consistent content and distribution to establish authority.", solution: "Content strategy, multi-platform pipelines, and micro-campaigns designed to scale authority and trust." }
+  ];
+
+  const getColorClasses = (color) => {
+    const colors = {
+      orange: { border: "hover:border-orange-500/60", shadow: "hover:shadow-orange-500/20", icon: "from-orange-500 to-orange-600", text: "group-hover:text-orange-100", accent: "text-orange-400" },
+      blue: { border: "hover:border-blue-500/60", shadow: "hover:shadow-blue-500/20", icon: "from-blue-500 to-blue-600", text: "group-hover:text-blue-100", accent: "text-blue-400" },
+      green: { border: "hover:border-green-500/60", shadow: "hover:shadow-green-500/20", icon: "from-green-500 to-green-600", text: "group-hover:text-green-100", accent: "text-green-400" },
+      purple: { border: "hover:border-purple-500/60", shadow: "hover:shadow-purple-500/20", icon: "from-purple-500 to-purple-600", text: "group-hover:text-purple-100", accent: "text-purple-400" },
+      red: { border: "hover:border-red-500/60", shadow: "hover:shadow-red-500/20", icon: "from-red-500 to-red-600", text: "group-hover:text-red-100", accent: "text-red-400" },
+      indigo: { border: "hover:border-indigo-500/60", shadow: "hover:shadow-indigo-500/20", icon: "from-indigo-500 to-indigo-600", text: "group-hover:text-indigo-100", accent: "text-indigo-400" },
+      teal: { border: "hover:border-teal-500/60", shadow: "hover:shadow-teal-500/20", icon: "from-teal-500 to-teal-600", text: "group-hover:text-teal-100", accent: "text-teal-400" },
+      yellow: { border: "hover:border-yellow-500/60", shadow: "hover:shadow-yellow-500/20", icon: "from-yellow-500 to-yellow-600", text: "group-hover:text-yellow-100", accent: "text-yellow-400" }
+    };
+    return colors[color] || colors.orange;
+  };
 
   return (
-    <div id="work" ref={sectionRef} className="app-showcase flex flex-col items-stretch justify-start gap-16 py-20 px-4 bg-gradient-to-b from-black via-gray-950 to-black relative overflow-hidden">
+    <motion.section 
+      id="work" 
+      ref={sectionRef} 
+      className="app-showcase relative overflow-hidden bg-gradient-to-b from-black via-gray-950 to-black py-16 lg:py-24"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.2 }}
+    >
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="floating-bg-1 absolute top-20 left-10 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl"></div>
-        <div className="floating-bg-2 absolute top-40 right-10 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl"></div>
-        <div className="floating-bg-3 absolute bottom-20 left-1/2 w-72 h-72 bg-green-500 rounded-full mix-blend-multiply filter blur-xl"></div>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="floating-bg-1 absolute -top-20 -right-20 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="floating-bg-2 absolute -bottom-20 -left-20 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl animate-pulse"></div>
+        <div className="floating-bg-3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-blue-500/5 to-purple-500/5 rounded-full blur-3xl opacity-50"></div>
       </div>
 
-      {/* What We Will Do For You Section */}
-      <div className="relative z-10 text-center mb-20">
-        <div className="mb-6">
-          {/*<span className="inline-block px-4 py-2 bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-500/30 rounded-full text-blue-200 text-sm font-medium mb-6">
-            ✨ Our Services
-          </span>*/}
-        </div>
-        <h1 className="section-title text-3xl md:text-5xl lg:text-5xl font-black text-white mb-6 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent leading-tight">
-          What We Will Do For You<br />
-         {/* <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">For You</span> */}
-        </h1>
-        
-        <div className="flex justify-center items-center space-x-4">
-          <div className="w-16 h-1 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full"></div>
-          <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-          <div className="w-16 h-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full"></div>
-        </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4">
+        {/* Animated Title */}
+        <motion.div 
+          className="text-center mb-16 lg:mb-24"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.h2 
+            className="section-title text-4xl md:text-5xl lg:text-6xl font-black mb-6 bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent leading-tight"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            Who We Do It For
+          </motion.h2>
+          <motion.p 
+            className="text-gray-400 text-lg max-w-2xl mx-auto"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            Tailored solutions for diverse industries, driving growth through innovative marketing strategies.
+          </motion.p>
+        </motion.div>
+
+        {/* Bento Grid Container */}
+        <motion.div 
+          ref={containerRef}
+          className="bento-container"
+          variants={containerVariants}
+        >
+          {/* Row 1: 2-span + 1-span + 1-span */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            {/* Alcobev Brands - 2-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-2 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 lg:p-8 h-80 lg:h-96"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-600/8 via-transparent to-orange-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`industry-icon flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="alcobev" />
+                  </div>
+                  <span className="px-3 py-1 bg-orange-500/20 text-orange-300 text-xs lg:text-sm font-medium rounded-full">Project-Based</span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 group-hover:text-orange-100 transition-colors">Alcobev Brands</h3>
+                <div className="space-y-3 flex-1 text-gray-300 text-sm lg:text-base">
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-orange-400 font-semibold text-xs lg:text-sm block mb-1">Challenge:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Crowded markets where creating buzz and loyalty is difficult.</p>
+                  </div>
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-orange-400 font-semibold text-xs lg:text-sm block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Creative campaigns, cultural activations, UGC integration, and performance marketing.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Podcasters - 1-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-1 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-4 lg:p-6 h-72 lg:h-80"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/8 via-transparent to-blue-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="podcast" />
+                  </div>
+                  <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs font-medium rounded-full">Sprint</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-blue-100 transition-colors">Podcasters</h3>
+                <div className="space-y-2 flex-1 text-gray-300 text-xs lg:text-sm">
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-blue-400 font-semibold text-xs block mb-1">Challenge:</span>
+                    <p className="text-gray-300 text-xs">Growing reach and building a loyal listener base.</p>
+                  </div>
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-blue-400 font-semibold text-xs block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs">Content design, audience-specific distribution, and engagement-driven micro-campaigns.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Restaurants - 1-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-1 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-4 lg:p-6 h-72 lg:h-80"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-green-600/8 via-transparent to-green-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg group-hover:shadow-green-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="restaurant" />
+                  </div>
+                  <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs font-medium rounded-full">Sprint</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-green-100 transition-colors">Restaurants</h3>
+                <div className="space-y-2 flex-1 text-gray-300 text-xs lg:text-sm">
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-green-400 font-semibold text-xs block mb-1">Challenge:</span>
+                    <p className="text-gray-300 text-xs">Generating awareness and repeat customers in competitive spaces.</p>
+                  </div>
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-green-400 font-semibold text-xs block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs">Campaign-led storytelling, localized activations, video/photo content, and targeted awareness ads.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Row 2: 1-span + 2-span + 1-span */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+            {/* D2C Brands - 1-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-1 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-4 lg:p-6 h-72 lg:h-80"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-600/8 via-transparent to-purple-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="d2c" />
+                  </div>
+                  <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs font-medium rounded-full">Consultancy</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-purple-100 transition-colors">D2C Brands</h3>
+                <div className="space-y-2 flex-1 text-gray-300 text-xs lg:text-sm">
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-purple-400 font-semibold text-xs block mb-1">Challenge:</span>
+                    <p className="text-gray-300 text-xs">Connecting with Gen Z through content, distribution, and ad funnels.</p>
+                  </div>
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-purple-400 font-semibold text-xs block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs">End-to-end marketing strategy, sharp creatives, influencer/UGC integration, and performance campaigns.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Legacy Brands - 2-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-2 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 lg:p-8 h-80 lg:h-96"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-red-600/8 via-transparent to-red-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`industry-icon flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg group-hover:shadow-red-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="legacy" />
+                  </div>
+                  <span className="px-3 py-1 bg-red-500/20 text-red-300 text-xs lg:text-sm font-medium rounded-full">Retainer</span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 group-hover:text-red-100 transition-colors">Legacy Brands</h3>
+                <div className="space-y-3 flex-1 text-gray-300 text-sm lg:text-base">
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-red-400 font-semibold text-xs lg:text-sm block mb-1">Challenge:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Shifting from distribution-led growth to relevance with younger audiences.</p>
+                  </div>
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-red-400 font-semibold text-xs lg:text-sm block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Refreshed communication strategy, recall-first campaigns, content distribution, and loyalty micro-campaigns.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Authors & Thought Leaders - 1-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-1 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-4 lg:p-6 h-72 lg:h-80"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/8 via-transparent to-indigo-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-3">
+                  <div className={`industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg group-hover:shadow-indigo-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="authors" />
+                  </div>
+                  <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-medium rounded-full">Retainer</span>
+                </div>
+                <h3 className="text-lg font-bold text-white mb-3 group-hover:text-indigo-100 transition-colors">Authors & Thought Leaders</h3>
+                <div className="space-y-2 flex-1 text-gray-300 text-xs lg:text-sm">
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-indigo-400 font-semibold text-xs block mb-1">Problem:</span>
+                    <p className="text-gray-300 text-xs">Building recall and credibility beyond a book launch.</p>
+                  </div>
+                  <div className="p-2 lg:p-3 bg-gray-800/50 rounded-lg border border-gray-700/30">
+                    <span className="text-indigo-400 font-semibold text-xs block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs">Brand positioning, personal brand engines, strategic content buckets, high-converting video content, and full-funnel campaigns.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Row 3: 2-span + 2-span */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Doctors - 2-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-2 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 lg:p-8 h-80 lg:h-96"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-teal-600/8 via-transparent to-teal-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`industry-icon flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg group-hover:shadow-teal-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="doctors" />
+                  </div>
+                  <span className="px-3 py-1 bg-teal-500/20 text-teal-300 text-xs lg:text-sm font-medium rounded-full">Retainer</span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 group-hover:text-teal-100 transition-colors">Doctors</h3>
+                <div className="space-y-3 flex-1 text-gray-300 text-sm lg:text-base">
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-teal-400 font-semibold text-xs lg:text-sm block mb-1">Problem:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Turning medical expertise into trust and consistent patient acquisition.</p>
+                  </div>
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-teal-400 font-semibold text-xs lg:text-sm block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Audience mapping, positioning frameworks, credibility-led content, ad funnels for leads, and continuous optimization.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Entrepreneurs - 2-span */}
+            <motion.div 
+              className="bento-card col-span-1 lg:col-span-2 relative overflow-hidden bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 lg:p-8 h-80 lg:h-96"
+              variants={itemVariants}
+              whileHover={hoverVariants}
+              whileTap={{ scale: 0.98 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/8 via-transparent to-yellow-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center justify-between mb-4">
+                  <div className={`industry-icon flex items-center justify-center w-12 h-12 lg:w-14 lg:h-14 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg group-hover:shadow-yellow-500/50 transition-all duration-300`}>
+                    <IndustryIcon type="entrepreneurs" />
+                  </div>
+                  <span className="px-3 py-1 bg-yellow-500/20 text-yellow-300 text-xs lg:text-sm font-medium rounded-full">Retainer</span>
+                </div>
+                <h3 className="text-xl lg:text-2xl font-bold text-white mb-4 group-hover:text-yellow-100 transition-colors">Entrepreneurs</h3>
+                <div className="space-y-3 flex-1 text-gray-300 text-sm lg:text-base">
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-yellow-400 font-semibold text-xs lg:text-sm block mb-1">Problem:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Lack of consistent content and distribution to establish authority.</p>
+                  </div>
+                  <div className="p-3 lg:p-4 bg-gray-800/50 rounded-xl border border-gray-700/30">
+                    <span className="text-yellow-400 font-semibold text-xs lg:text-sm block mb-1">Solution:</span>
+                    <p className="text-gray-300 text-xs lg:text-sm">Content strategy, multi-platform pipelines, and micro-campaigns designed to scale authority and trust.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </motion.div>
       </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto mb-32">
-        <ServiceSlider />
-      </div>
-
-
-      {/* Brand Categories Section */}
-      <div className="relative z-10 text-center mb-20">
-        <div className="mb-6">
-          {/*<span className="inline-block px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 rounded-full text-purple-200 text-sm font-medium mb-6">
-            🎯 Industry Expertise
-          </span>*/}
-        </div>
-        <h2 className="text-4xl md:text-5xl lg:text-5xl font-black text-white mb-6 bg-gradient-to-r from-white via-purple-100 to-pink-100 bg-clip-text text-transparent leading-tight">
-          Who We Do It For<br /></h2>
-          {/*<span className="bg-gradient-to-r from-purple-400 via-pink-400 to-red-400 bg-clip-text text-transparent">Industries</span>
-        */}
-      </div>
-
-      <div className="relative z-10 max-w-7xl mx-auto">
-        <div className="industries-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Alcobev Brands */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-orange-500/60 transition-all duration-500 shadow-xl hover:shadow-orange-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-orange-600/8 via-transparent to-orange-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl shadow-lg group-hover:shadow-orange-500/50 transition-all duration-300">
-                  <IndustryIcon type="alcobev" />
-                </div>
-                <span className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs font-medium rounded-full">Project-Based</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-orange-100 transition-colors">Alcobev Brands</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-orange-400 font-semibold text-xs">Challenge:</span>
-                  <p className="text-gray-300 text-xs mt-1">Crowded markets where creating buzz and loyalty is difficult.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-orange-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Creative campaigns, cultural activations, UGC integration, and performance marketing.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Podcasters */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-blue-500/60 transition-all duration-500 shadow-xl hover:shadow-blue-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-600/8 via-transparent to-blue-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg group-hover:shadow-blue-500/50 transition-all duration-300">
-                  <IndustryIcon type="podcast" />
-                </div>
-                <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs font-medium rounded-full">Sprint</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-blue-100 transition-colors">Podcasters</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-blue-400 font-semibold text-xs">Challenge:</span>
-                  <p className="text-gray-300 text-xs mt-1">Growing reach and building a loyal listener base.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-blue-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Content design, audience-specific distribution, and engagement-driven micro-campaigns.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Restaurants */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-green-500/60 transition-all duration-500 shadow-xl hover:shadow-green-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-green-600/8 via-transparent to-green-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg group-hover:shadow-green-500/50 transition-all duration-300">
-                  <IndustryIcon type="restaurant" />
-                </div>
-                <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs font-medium rounded-full">Sprint</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-green-100 transition-colors">Restaurants</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-green-400 font-semibold text-xs">Challenge:</span>
-                  <p className="text-gray-300 text-xs mt-1">Generating awareness and repeat customers in competitive spaces.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-green-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Campaign-led storytelling, localized activations, video/photo content, and targeted awareness ads.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* D2C Brands */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-purple-500/60 transition-all duration-500 shadow-xl hover:shadow-purple-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/8 via-transparent to-purple-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg group-hover:shadow-purple-500/50 transition-all duration-300">
-                  <IndustryIcon type="d2c" />
-                </div>
-                <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs font-medium rounded-full">Consultancy</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-purple-100 transition-colors">D2C Brands</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-purple-400 font-semibold text-xs">Challenge:</span>
-                  <p className="text-gray-300 text-xs mt-1">Connecting with Gen Z through content, distribution, and ad funnels.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-purple-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">End-to-end marketing strategy, sharp creatives, influencer/UGC integration, and performance campaigns.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Legacy Brands */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-red-500/60 transition-all duration-500 shadow-xl hover:shadow-red-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-red-600/8 via-transparent to-red-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg group-hover:shadow-red-500/50 transition-all duration-300">
-                  <IndustryIcon type="legacy" />
-                </div>
-                <span className="px-2 py-1 bg-red-500/20 text-red-300 text-xs font-medium rounded-full">Retainer</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-red-100 transition-colors">Legacy Brands</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-red-400 font-semibold text-xs">Challenge:</span>
-                  <p className="text-gray-300 text-xs mt-1">Shifting from distribution-led growth to relevance with younger audiences.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-red-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Refreshed communication strategy, recall-first campaigns, content distribution, and loyalty micro-campaigns.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Authors & Thought Leaders */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-indigo-500/60 transition-all duration-500 shadow-xl hover:shadow-indigo-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/8 via-transparent to-indigo-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg group-hover:shadow-indigo-500/50 transition-all duration-300">
-                  <IndustryIcon type="authors" />
-                </div>
-                <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 text-xs font-medium rounded-full">Retainer</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-indigo-100 transition-colors">Authors & Thought Leaders</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-indigo-400 font-semibold text-xs">Problem:</span>
-                  <p className="text-gray-300 text-xs mt-1">Building recall and credibility beyond a book launch.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-indigo-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Brand positioning, personal brand engines, strategic content buckets, high-converting video content, and full-funnel campaigns.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Doctors */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-teal-500/60 transition-all duration-500 shadow-xl hover:shadow-teal-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-teal-600/8 via-transparent to-teal-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl shadow-lg group-hover:shadow-teal-500/50 transition-all duration-300">
-                  <IndustryIcon type="doctors" />
-                </div>
-                <span className="px-2 py-1 bg-teal-500/20 text-teal-300 text-xs font-medium rounded-full">Retainer</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-teal-100 transition-colors">Doctors</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-teal-400 font-semibold text-xs">Problem:</span>
-                  <p className="text-gray-300 text-xs mt-1">Turning medical expertise into trust and consistent patient acquisition.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-teal-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Audience mapping, positioning frameworks, credibility-led content, ad funnels for leads, and continuous optimization.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Entrepreneurs */}
-          <div className="industry-card group relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/90 backdrop-blur-xl border border-gray-700/40 rounded-2xl p-6 hover:border-yellow-500/60 transition-all duration-500 shadow-xl hover:shadow-yellow-500/20 w-full h-90">
-            <div className="absolute inset-0 bg-gradient-to-br from-yellow-600/8 via-transparent to-yellow-800/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="industry-icon flex items-center justify-center w-10 h-10 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg group-hover:shadow-yellow-500/50 transition-all duration-300">
-                  <IndustryIcon type="entrepreneurs" />
-                </div>
-                <span className="px-2 py-1 bg-yellow-500/20 text-yellow-300 text-xs font-medium rounded-full">Retainer</span>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-3 group-hover:text-yellow-100 transition-colors">Entrepreneurs</h3>
-              <div className="space-y-3 text-gray-300 text-sm">
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-yellow-400 font-semibold text-xs">Problem:</span>
-                  <p className="text-gray-300 text-xs mt-1">Lack of consistent content and distribution to establish authority.</p>
-                </div>
-                <div className="p-3 bg-gray-800/50 rounded-xl border border-gray-700/30">
-                  <span className="text-yellow-400 font-semibold text-xs">Solution:</span>
-                  <p className="text-gray-300 text-xs mt-1">Content strategy, multi-platform pipelines, and micro-campaigns designed to scale authority and trust.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    </motion.section>
   );
 };
 

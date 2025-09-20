@@ -25,7 +25,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : "not-scrolled"}`}>
+    <header className={`navbar scrolled`}>
       <div className="inner">
       <Link to="/#hero" className="logo">
         <img src={elationLogo} alt="Elation Logo" style={{ height: '64px', width: '56px', borderRadius: '12px', boxShadow: '0 4px 16px rgba(0,0,0,0.15)', marginRight: '16px', objectFit: 'cover' }} />
