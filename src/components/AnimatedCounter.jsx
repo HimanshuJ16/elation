@@ -126,8 +126,8 @@ const AnimatedCounter = () => {
     const icons = [
       "🎯", // Projects
       "👥",  // Clients
-      "⚡",  // Campaigns
-      "📈"   // Growth
+      "▶️",  // Campaigns
+      "🌍"   // Growth
     ];
     return icons[index % icons.length];
   };
@@ -157,7 +157,7 @@ const AnimatedCounter = () => {
       <div className="relative z-10 px-4 max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16 lg:mb-24">
-          <motion.span 
+          {/* <motion.span 
             className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-white/10 rounded-full text-white/80 text-sm font-medium mb-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -166,7 +166,7 @@ const AnimatedCounter = () => {
           >
             <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-ping"></div>
             Our Impact
-          </motion.span>
+          </motion.span> */}
           
           <motion.h2 
             className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100/80 to-pink-100/80 mb-4 leading-tight"

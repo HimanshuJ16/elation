@@ -5,6 +5,7 @@ import AnimatedCounter from "../components/AnimatedCounter";
 import SplitText from '../components/SplitText';
 import ServiceSlider from '../components/ServerSlider';
 import ShowCase from "../components/ShowCase";
+import ServiceShowcase from "../components/ServerSlider";
 
 const Hero = () => {
   useGSAP(() => {
@@ -80,21 +81,12 @@ const Hero = () => {
               </button>
             </div>
           </div>
-        </header>
-        {/* Scroll Indicator */}
-        <motion.div 
-          className="mt-8 flex flex-col items-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 2.5 }}
-        >
-          <div className="w-px h-12 bg-gradient-to-b from-purple-400 to-transparent"></div>
-          <p className="text-xs text-gray-500 uppercase tracking-wider mt-2">Explore Our Work</p>
-        </motion.div>         
+        </header>     
       </div> 
       <ShowCase />
       <AnimatedCounter />
       <ServiceSlider />
+      {/* <ServiceShowcase /> */}
 
       {/* CSS for float animation */}
       <style>{`
