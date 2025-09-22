@@ -4,6 +4,7 @@ import SplitText from './SplitText'
 import { motion } from "framer-motion";
 import LightRays from "./LightRays";
 import PrismaticBurst from "./PrismaticBurst";
+import CurvedLoop from "./CurvedLoop";
 
 const HeroLanding = () => {
   useGSAP(() => {
@@ -50,7 +51,7 @@ const HeroLanding = () => {
     className="custom-rays"
   />
 </div> */}
-<div style={{ width: '100%', height: '100vh', position: 'absolute' }}>
+{/* <div style={{ width: '100%', height: '100vh', position: 'absolute' }}>
   <PrismaticBurst
     animationType="rotate3d"
     intensity={2}
@@ -63,7 +64,7 @@ const HeroLanding = () => {
     mixBlendMode="lighten"
     colors={['#B5B964', '#000', '#000']}
   />
-</div>
+</div> */}
       {/* Background image */}
       {/* <div className="absolute top-0 left-0 z-0 pointer-events-none">
         <img src="/images/bg.png" alt="background" />
@@ -72,7 +73,7 @@ const HeroLanding = () => {
         {/* Centered Hero Content */}
         <header className="flex-1 flex items-center justify-center w-full md:px-20 px-5">
           <div className="mx-auto max-w-6xl flex flex-col items-center text-center gap-8">
-            <SplitText
+            {/* <SplitText
               text="Attention • Recall • Revenue"
               className="text-7xl font-semibold text-center"
               delay={100}
@@ -84,7 +85,15 @@ const HeroLanding = () => {
               threshold={0.1}
               rootMargin="-100px"
               textAlign="center"
-            />
+            /> */}
+            <CurvedLoop 
+  marqueeText="Attention ✦ Recall ✦ Revenue ✦"
+  speed={3}
+  curveAmount={-150}
+  direction="right"
+  interactive={true}
+  className="custom-text-style"
+/>
 
             {/* Smaller Description */}
             <div className="relative max-w-3xl">
