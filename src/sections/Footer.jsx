@@ -16,13 +16,13 @@ const Footer = () => {
       </div>
 
       {/* Main Footer Content */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         
         {/* Top Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-16 mb-16">
           
           {/* Company Info - Enhanced */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 lg:order-1">
             <div className="group">
               {/* Logo Section */}
               <div className="flex items-center gap-4 mb-8">
@@ -46,61 +46,63 @@ const Footer = () => {
               <p className="text-gray-300 text-lg leading-relaxed mb-8 max-w-md">
                 Driving growth through innovative marketing strategies and cutting-edge digital solutions for modern businesses.
               </p>
-
-              {/* Contact Information - Enhanced */}
-              <div className="space-y-4">
-                {/* Location */}
-                <div className="group flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300">
-                  <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M12 21s7-4.438 7-10a7 7 0 1 0-14 0c0 5.562 7 10 7 10z" />
-                      <circle cx="12" cy="11" r="3" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Location</p>
-                    <p className="text-white font-semibold">New Delhi, India</p>
-                  </div>
-                </div>
-
-                {/* Email */}
-                <a
-                  href="mailto:info@elation.digital"
-                  className="group flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M4 6h16v12H4z" />
-                      <path d="m4 7 8 6 8-6" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Email</p>
-                    <p className="text-white font-semibold group-hover:text-blue-300 transition-colors duration-300">info@elation.digital</p>
-                  </div>
-                </a>
-
-                {/* Phone */}
-                <a
-                  href="tel:+919097290982"
-                  className="group flex items-center gap-4 p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02]"
-                >
-                  <div className="flex items-center justify-center w-12 h-12 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
-                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                      <path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h2a2 2 0 0 1 2 1.72c.12.9.32 1.77.59 2.61a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.47-1.11a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.61.59A2 2 0 0 1 22 16.92z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <p className="text-gray-400 text-sm font-medium">Phone</p>
-                    <p className="text-white font-semibold group-hover:text-green-300 transition-colors duration-300">+91-9097290982</p>
-                  </div>
-                </a>
-              </div>
             </div>
           </div>
 
-          {/* Social Media Section - Enhanced */}
-          <div className="lg:col-span-1">
+          {/* Contact Information - Enhanced - Moved to middle column on large screens */}
+          <div className="lg:col-span-1 lg:order-2">
+            <div className="space-y-2">
+              {/* Location */}
+              <div className="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300">
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M12 21s7-4.438 7-10a7 7 0 1 0-14 0c0 5.562 7 10 7 10z" />
+                    <circle cx="12" cy="11" r="3" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm font-medium">Location</p>
+                  <p className="text-white font-semibold">New Delhi, India</p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <a
+                href="mailto:info@elation.digital"
+                className="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+              >
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M4 6h16v12H4z" />
+                    <path d="m4 7 8 6 8-6" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm font-medium">Email</p>
+                  <p className="text-white font-semibold group-hover:text-blue-300 transition-colors duration-300">info@elation.digital</p>
+                </div>
+              </a>
+
+              {/* Phone */}
+              <a
+                href="tel:+919097290982"
+                className="group flex items-center gap-4 p-3 rounded-xl transition-all duration-300 hover:scale-[1.02]"
+              >
+                <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-br from-green-500 to-emerald-500 rounded-xl shadow-lg group-hover:shadow-xl transition-all duration-300">
+                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                    <path d="M22 16.92v2a2 2 0 0 1-2.18 2 19.86 19.86 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.86 19.86 0 0 1 2.08 4.18 2 2 0 0 1 4.06 2h2a2 2 0 0 1 2 1.72c.12.9.32 1.77.59 2.61a2 2 0 0 1-.45 2.11L7.09 9.91a16 16 0 0 0 6 6l1.47-1.11a2 2 0 0 1 2.11-.45c.84.27 1.71.47 2.61.59A2 2 0 0 1 22 16.92z" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm font-medium">Phone</p>
+                  <p className="text-white font-semibold group-hover:text-green-300 transition-colors duration-300">+91-9097290982</p>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          {/* Social Media Section - Enhanced - Moved to right column */}
+          <div className="lg:col-span-1 lg:order-3">
             <div className="flex flex-col items-center lg:items-end h-full justify-center">
               <h4 className="text-xl font-bold text-white mb-6 relative">
                 Connect With Us
@@ -171,7 +173,7 @@ const Footer = () => {
 
           {/* Developer Credit - Enhanced */}
           <div className="text-center lg:text-right">
-            <p className="text-gray-400 mb-2">
+            <p className="text-gray-400">
               Made with <span className="text-red-500 animate-pulse">❤</span> by{" "}
               <span className="text-transparent bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text font-semibold">
                 Yash Chopra

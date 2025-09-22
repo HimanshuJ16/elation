@@ -12,7 +12,7 @@ const ShowCase = () => {
           transition={{ duration: 0.8, delay: 0.2 }}
           viewport={{ once: true }}
         >
-          Our Work Showcase
+          Our Work
         </motion.h2>
         <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
           See how we've transformed brands through creative storytelling and strategic execution

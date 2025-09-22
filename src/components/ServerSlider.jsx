@@ -614,9 +614,9 @@ const ServiceShowcase = () => {
       gradient: "from-blue-500 via-blue-600 to-blue-700",
       items: [
         { title: "Audience Mapping", desc: "identify segments and uncover digital opportunities to win attention.", icon: "👥" },
-        { title: "Competitor Analysis", desc: "scan messaging, hooks, and funnels to spot market gaps.", icon: "🔍" },
+        { title: "Campaign Ideation", desc: "plan micro-campaigns and activations aligned with growth.", icon: "💡" },
         { title: "Brand Positioning", desc: "define how your brand communicates and builds recall.", icon: "🎯" },
-        { title: "Campaign Ideation", desc: "plan micro-campaigns and activations aligned with growth.", icon: "💡" }
+        { title: "Competitor Analysis", desc: "scan messaging, hooks, and funnels to spot market gaps.", icon: "🔍" },
       ]
     },
     {
@@ -717,7 +717,7 @@ const ServiceShowcase = () => {
                 whileHover={{ scale: 1.02, y: -8 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className={`relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-full cursor-pointer transition-all duration-500 hover:border-white/20 group-hover:shadow-2xl`}>
+                <div className={`relative overflow-hidden bg-gradient-to-br from-gray-900/90 via-gray-800/70 to-gray-900/95 backdrop-blur-xl border border-white/10 rounded-3xl p-6 h-full cursor-pointer transition-all duration-500 hover:border-white/20 group-hover:shadow-2xl`}>
                   
                   {/* Gradient Background */}
                   <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`}></div>
