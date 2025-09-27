@@ -284,7 +284,7 @@ const Testimonials = () => {
     <motion.section 
       ref={sectionRef}
       id="testimonials" 
-      className="relative py-20 lg:py-32 overflow-hidden"
+      className="relative py-10 lg:py-16 overflow-hidden"
       // style={{ 
       //   background: 'linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%)'
       // }}
@@ -344,12 +344,22 @@ const Testimonials = () => {
           animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          <TitleHeader
-            title="Frequently Asked Questions"
-            subtitle="Clear answers to help you understand how we work and what to expect"
-            titleClassName="text-4xl lg:text-5xl xl:text-6xl font-bold"
-            subtitleClassName="text-gray-400 text-lg lg:text-xl mt-4 max-w-2xl mx-auto"
-          />
+          <div className="lg:hidden">
+            <TitleHeader
+              title="FAQs"
+              subtitle="Clear answers to help you understand how we work and what to expect"
+              titleClassName="text-4xl lg:text-5xl xl:text-6xl font-bold"
+              subtitleClassName="text-gray-400 text-lg lg:text-xl mt-4 max-w-2xl mx-auto"
+            />
+          </div>
+          <div className="hidden lg:block">
+            <TitleHeader
+              title="Frequently Asked Questions"
+              subtitle="Clear answers to help you understand how we work and what to expect"
+              titleClassName="text-4xl lg:text-5xl xl:text-6xl font-bold"
+              subtitleClassName="text-gray-400 text-lg lg:text-xl mt-4 max-w-2xl mx-auto"
+            />
+          </div>
         </motion.div>
 
         {/* FAQ Grid */}

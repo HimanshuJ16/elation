@@ -142,7 +142,7 @@ const AnimatedCounter = () => {
     <section 
       ref={containerRef}
       id="counter" 
-      className="relative overflow-hidden py-20 lg:py-32 bg-gradient-to-b from-gray-950 via-black/50 to-gray-900"
+      className="relative overflow-hidden py-10 lg:py-16 bg-gradient-to-b from-gray-950 via-black/50 to-gray-900"
     >
       {/* Animated background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -156,18 +156,7 @@ const AnimatedCounter = () => {
 
       <div className="relative z-10 px-4 max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-16 lg:mb-24">
-          {/* <motion.span 
-            className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-white/10 rounded-full text-white/80 text-sm font-medium mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            viewport={{ once: true }}
-          >
-            <div className="w-2 h-2 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full animate-ping"></div>
-            Our Impact
-          </motion.span> */}
-          
+        <div className="text-center mb-16 lg:mb-24">      
           <motion.h2 
             className="text-4xl lg:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-100/80 to-pink-100/80 mb-4 leading-tight"
             initial={{ opacity: 0, y: 30 }}
@@ -196,44 +185,43 @@ const AnimatedCounter = () => {
           
           {enhancedCounterItems.map((item, index) => (
             <motion.div
-              key={index}
-              ref={(el) => el && (counterRefs.current[index] = el)}
-              className={`
-                group relative overflow-hidden
-                bg-gradient-to-br from-gray-900/95 via-gray-800/70 to-gray-900/95
-                backdrop-blur-xl border border-white/5 rounded-2xl lg:rounded-3xl
-                p-6 lg:p-8 h-full transition-all duration-500
-                hover:border-white/20 hover:bg-gradient-to-br hover:from-gray-800/90
-                ${index % 2 === 0 ? 'lg:hover:shadow-purple-500/10 lg:hover:shadow-xl' : 'lg:hover:shadow-pink-500/10 lg:hover:shadow-xl'}
-              `}
-              initial={{ 
-                opacity: 0, 
-                y: 50,
-                scale: 0.95,
-                rotateX: 10
-              }}
-              whileInView={{ 
-                opacity: 1, 
-                y: 0,
-                scale: 1,
-                rotateX: 0
-              }}
-              transition={{ 
-                duration: 0.8,
-                delay: index * 0.1,
-                ease: "backOut"
-              }}
-              viewport={{ once: true, amount: 0.3 }}
-              whileHover={{
-                y: -8,
-                scale: 1.02,
-                rotateX: 0,
-                transition: { 
-                  duration: 0.4,
-                  y: { type: "spring", stiffness: 300, damping: 20 }
-                }
-              }}
-            >
+  key={index}
+  ref={(el) => el && (counterRefs.current[index] = el)}
+  className={`
+    group relative overflow-hidden
+    bg-white/10 backdrop-blur-lg border border-white/10 rounded-2xl lg:rounded-3xl
+    p-6 lg:p-8 h-full transition-all duration-500
+    hover:bg-white/15 hover:backdrop-blur-xl hover:border-white/20
+    ${index % 2 === 0 ? 'lg:hover:shadow-[0_0_20px_rgba(168,85,247,0.2)]' : 'lg:hover:shadow-[0_0_20px_rgba(236,72,153,0.2)]'}
+  `}
+  initial={{ 
+    opacity: 0, 
+    y: 50,
+    scale: 0.95,
+    rotateX: 10
+  }}
+  whileInView={{ 
+    opacity: 1, 
+    y: 0,
+    scale: 1,
+    rotateX: 0
+  }}
+  transition={{ 
+    duration: 0.8,
+    delay: index * 0.1,
+    ease: "backOut"
+  }}
+  viewport={{ once: true, amount: 0.3 }}
+  whileHover={{
+    y: -8,
+    scale: 1.02,
+    rotateX: 0,
+    transition: { 
+      duration: 0.4,
+      y: { type: "spring", stiffness: 300, damping: 20 }
+    }
+  }}
+>
               {/* Gradient overlay for reveal effect */}
               <div 
                 ref={(el) => el && (overlayRefs.current[index] = el)}
@@ -304,47 +292,6 @@ const AnimatedCounter = () => {
             </motion.div>
           ))}
         </div>
-
-        {/* CTA Section */}
-        {/* <motion.div 
-          className="text-center mt-20 lg:mt-32"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          viewport={{ once: true }}
-        >
-          <motion.button 
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r 
-              from-purple-600 via-purple-600/90 to-pink-600 text-white font-semibold 
-              rounded-full backdrop-blur-sm border border-white/20
-              hover:from-purple-500 hover:to-pink-500 hover:shadow-lg
-              hover:shadow-purple-500/25 transition-all duration-300
-              relative overflow-hidden"
-            whileHover={{ 
-              scale: 1.05,
-              boxShadow: "0 20px 40px -10px rgba(168, 85, 247, 0.3)"
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <span>Ready to join our success stories?</span>
-            <motion.span 
-              className="w-2 h-2 bg-white rounded-full"
-              animate={{ 
-                x: [0, 20, 0],
-                scale: [1, 1.2, 1]
-              }}
-              transition={{ 
-                duration: 1.5,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-            ></motion.span>
-            
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20
-              rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300
-              -z-10 blur-sm"></div>
-          </motion.button>
-        </motion.div> */}
       </div>
 
       <style jsx>{`

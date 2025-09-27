@@ -95,7 +95,7 @@ class Media {
   constructor({
     geometry,
     gl,
-    image,
+    video: videoSrc,
     index,
     length,
     renderer,
@@ -111,7 +111,7 @@ class Media {
     this.extra = 0;
     this.geometry = geometry;
     this.gl = gl;
-    this.image = image;
+    this.videoSrc = videoSrc;
     this.index = index;
     this.length = length;
     this.renderer = renderer;
@@ -123,15 +123,59 @@ class Media {
     this.textColor = textColor;
     this.borderRadius = borderRadius;
     this.font = font;
+    this.createVideo();
     this.createShader();
     this.createMesh();
     this.createTitle();
     this.onResize();
   }
+
+  createVideo() {
+    // Create HTML5 video element
+    this.video = document.createElement('video');
+    this.video.src = this.videoSrc;
+    this.video.crossOrigin = 'anonymous';
+    this.video.loop = true;
+    this.video.muted = true;
+    this.video.autoplay = true;
+    this.video.playsInline = true;
+    
+    // Set video dimensions for better performance
+    this.video.width = 640;
+    this.video.height = 360;
+    
+    // Preload video
+    this.video.preload = 'metadata';
+    
+    // Start playing the video
+    this.video.play().catch(e => console.log('Video play failed:', e));
+  }
+
   createShader() {
+    // Initialize texture with a placeholder
     const texture = new Texture(this.gl, {
-      generateMipmaps: true
+      generateMipmaps: false,
+      wrapS: this.gl.CLAMP_TO_EDGE,
+      wrapT: this.gl.CLAMP_TO_EDGE,
+      minFilter: this.gl.LINEAR,
+      magFilter: this.gl.LINEAR
     });
+
+    // Create a placeholder 1x1 blue pixel
+    const level = 0;
+    const internalFormat = this.gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = this.gl.RGBA;
+    const srcType = this.gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 0, 255, 255]); // Blue pixel
+    
+    this.gl.bindTexture(this.gl.TEXTURE_2D, texture.texture);
+    this.gl.texImage2D(this.gl.TEXTURE_2D, level, internalFormat, width, height, border, srcFormat, srcType, pixel);
+    
+    this.texture = texture;
+    
     this.program = new Program(this.gl, {
       depthTest: false,
       depthWrite: false,
@@ -187,21 +231,36 @@ class Media {
       uniforms: {
         tMap: { value: texture },
         uPlaneSizes: { value: [0, 0] },
-        uImageSizes: { value: [0, 0] },
+        uImageSizes: { value: [16, 9] }, // Default 16:9 aspect ratio
         uSpeed: { value: 0 },
         uTime: { value: 100 * Math.random() },
         uBorderRadius: { value: this.borderRadius }
       },
       transparent: true
     });
-    const img = new Image();
-    img.crossOrigin = 'anonymous';
-    img.src = this.image;
-    img.onload = () => {
-      texture.image = img;
-      this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-    };
+
+    // Update video texture when video is ready
+    this.video.addEventListener('loadeddata', () => {
+      this.program.uniforms.uImageSizes.value = [this.video.videoWidth || 1920, this.video.videoHeight || 1080];
+    });
   }
+
+  updateVideoTexture() {
+    // Update texture with current video frame
+    if (this.video.readyState >= this.video.HAVE_CURRENT_DATA) {
+      this.gl.bindTexture(this.gl.TEXTURE_2D, this.texture.texture);
+      this.gl.pixelStorei(this.gl.UNPACK_FLIP_Y_WEBGL, true);
+      this.gl.texImage2D(
+        this.gl.TEXTURE_2D,
+        0,
+        this.gl.RGBA,
+        this.gl.RGBA,
+        this.gl.UNSIGNED_BYTE,
+        this.video
+      );
+    }
+  }
+
   createMesh() {
     this.plane = new Mesh(this.gl, {
       geometry: this.geometry,
@@ -209,6 +268,7 @@ class Media {
     });
     this.plane.setParent(this.scene);
   }
+
   createTitle() {
     this.title = new Title({
       gl: this.gl,
@@ -219,7 +279,11 @@ class Media {
       fontFamily: this.font
     });
   }
+
   update(scroll, direction) {
+    // Update video texture on each frame
+    this.updateVideoTexture();
+    
     this.plane.position.x = this.x - scroll.current - this.extra;
 
     const x = this.plane.position.x;
@@ -260,6 +324,7 @@ class Media {
       this.isBefore = this.isAfter = false;
     }
   }
+
   onResize({ screen, viewport } = {}) {
     if (screen) this.screen = screen;
     if (viewport) {
@@ -276,6 +341,15 @@ class Media {
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
+  }
+
+  destroy() {
+    // Clean up video element
+    if (this.video) {
+      this.video.pause();
+      this.video.src = '';
+      this.video.remove();
+    }
   }
 }
 
@@ -306,6 +380,7 @@ class App {
     this.update();
     this.addEventListeners();
   }
+
   createRenderer() {
     this.renderer = new Renderer({
       alpha: true,
@@ -316,44 +391,46 @@ class App {
     this.gl.clearColor(0, 0, 0, 0);
     this.container.appendChild(this.gl.canvas);
   }
+
   createCamera() {
     this.camera = new Camera(this.gl);
     this.camera.fov = 45;
     this.camera.position.z = 20;
   }
+
   createScene() {
     this.scene = new Transform();
   }
+
   createGeometry() {
     this.planeGeometry = new Plane(this.gl, {
       heightSegments: 50,
       widthSegments: 100
     });
   }
+
   createMedias(items, bend = 1, textColor, borderRadius, font) {
     const defaultItems = [
-      { image: `https://himanshuj16.github.io/portfolio/_next/static/media/1111.328d882c.jpg` },
-      { image: `https://picsum.photos/seed/2/800/600?grayscale`, text: 'Desk Setup' },
-      { image: `https://picsum.photos/seed/3/800/600?grayscale`, text: 'Waterfall' },
-      { image: `https://picsum.photos/seed/4/800/600?grayscale`, text: 'Strawberries' },
-      { image: `https://picsum.photos/seed/5/800/600?grayscale`, text: 'Deep Diving' },
-      { image: `https://picsum.photos/seed/16/800/600?grayscale`, text: 'Train Track' },
-      { image: `https://picsum.photos/seed/17/800/600?grayscale`, text: 'Santorini' },
-      { image: `https://picsum.photos/seed/8/800/600?grayscale`, text: 'Blurry Lights' },
-      { image: `https://picsum.photos/seed/9/800/600?grayscale`, text: 'New York' },
-      { image: `https://picsum.photos/seed/10/800/600?grayscale`, text: 'Good Boy' },
-      { image: `https://picsum.photos/seed/21/800/600?grayscale`, text: 'Coastline' },
-      { image: `https://picsum.photos/seed/12/800/600?grayscale`, text: 'Palm Trees' }
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4`, text: 'Big Buck Bunny' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4`, text: 'Elephants Dream' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4`, text: 'For Bigger Blazes' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4`, text: 'For Bigger Escapes' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4`, text: 'For Bigger Fun' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4`, text: 'For Bigger Joyrides' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4`, text: 'For Bigger Meltdowns' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4`, text: 'Sintel' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4`, text: 'Subaru Outback' },
+      { video: `https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4`, text: 'Tears of Steel' },
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    this.mediasImages = galleryItems.concat(galleryItems);
-    this.medias = this.mediasImages.map((data, index) => {
+    this.mediasVideos = galleryItems.concat(galleryItems);
+    this.medias = this.mediasVideos.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
         gl: this.gl,
-        image: data.image,
+        video: data.video,
         index,
-        length: this.mediasImages.length,
+        length: this.mediasVideos.length,
         renderer: this.renderer,
         scene: this.scene,
         screen: this.screen,
@@ -366,26 +443,31 @@ class App {
       });
     });
   }
+
   onTouchDown(e) {
     this.isDown = true;
     this.scroll.position = this.scroll.current;
     this.start = e.touches ? e.touches[0].clientX : e.clientX;
   }
+
   onTouchMove(e) {
     if (!this.isDown) return;
     const x = e.touches ? e.touches[0].clientX : e.clientX;
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
     this.scroll.target = this.scroll.position + distance;
   }
+
   onTouchUp() {
     this.isDown = false;
     this.onCheck();
   }
+
   onWheel(e) {
     const delta = e.deltaY || e.wheelDelta || e.detail;
     this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.2;
     this.onCheckDebounce();
   }
+
   onCheck() {
     if (!this.medias || !this.medias[0]) return;
     const width = this.medias[0].width;
@@ -393,6 +475,7 @@ class App {
     const item = width * itemIndex;
     this.scroll.target = this.scroll.target < 0 ? -item : item;
   }
+
   onResize() {
     this.screen = {
       width: this.container.clientWidth,
@@ -410,6 +493,7 @@ class App {
       this.medias.forEach(media => media.onResize({ screen: this.screen, viewport: this.viewport }));
     }
   }
+
   update() {
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
@@ -420,6 +504,7 @@ class App {
     this.scroll.last = this.scroll.current;
     this.raf = window.requestAnimationFrame(this.update.bind(this));
   }
+
   addEventListeners() {
     this.boundOnResize = this.onResize.bind(this);
     this.boundOnWheel = this.onWheel.bind(this);
@@ -436,6 +521,7 @@ class App {
     window.addEventListener('touchmove', this.boundOnTouchMove);
     window.addEventListener('touchend', this.boundOnTouchUp);
   }
+
   destroy() {
     window.cancelAnimationFrame(this.raf);
     window.removeEventListener('resize', this.boundOnResize);
@@ -447,6 +533,12 @@ class App {
     window.removeEventListener('touchstart', this.boundOnTouchDown);
     window.removeEventListener('touchmove', this.boundOnTouchMove);
     window.removeEventListener('touchend', this.boundOnTouchUp);
+    
+    // Clean up video elements
+    if (this.medias) {
+      this.medias.forEach(media => media.destroy());
+    }
+    
     if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas);
     }

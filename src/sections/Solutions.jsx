@@ -193,7 +193,6 @@ const Solutions = () => {
         <div className="flex flex-col items-center gap-16">
           <TitleHeader
             title=" Our Process"
-            sub="💡 Engineering the Digital Future of Your Business"
           />
 
           <div className="relative z-50 w-full">
@@ -232,7 +231,7 @@ const Solutions = () => {
                           <img src={card.timelineLogo} alt="logo" />
                         </div>
                         <div>
-                          <h1 className="font-semibold text-3xl">{card.title}</h1>
+                          <h1 className="font-semibold text-3xl text-white">{card.title}</h1>
                           <p className="my-5 text-white-50">
                             📈&nbsp;{card.subtitle}
                           </p>

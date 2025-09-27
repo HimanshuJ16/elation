@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import CircularGallery from "./CircularGallery";
+import MobileVideoGrid from "./MobileVideoGrid";
 
 const ShowCase = () => {
   return (
@@ -14,10 +15,19 @@ const ShowCase = () => {
         >
           Our Work
         </motion.h2>
-        <p className="text-gray-400 text-lg max-w-3xl mx-auto leading-relaxed">
-          See how we've transformed brands through creative storytelling and strategic execution
-        </p>
-        <div style={{ height: '600px', position: 'relative' }}>
+        <motion.p 
+            className="text-gray-400 text-lg max-w-xl mx-auto text-center"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            viewport={{ once: true }}
+          >
+            See how we've transformed brands through creative storytelling and strategic execution
+        </motion.p>        
+        <div className="lg:hidden">
+          <MobileVideoGrid />
+        </div>
+        <div className="hidden lg:block" style={{ height: '600px', position: 'relative' }}>
           <CircularGallery bend={1} textColor="#ffffff" borderRadius={0.05} scrollEase={0.02}/>
         </div>
       </div>

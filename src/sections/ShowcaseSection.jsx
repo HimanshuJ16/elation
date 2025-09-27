@@ -226,7 +226,8 @@ const AppShowcase = () => {
     { type: "legacy", title: "Legacy Brands", tag: "Retainer", color: "red", challenge: "Shifting from distribution-led growth to relevance with younger audiences.", solution: "Refreshed communication strategy, recall-first campaigns, content distribution, and loyalty micro-campaigns." },
     { type: "authors", title: "Authors & Thought Leaders", tag: "Retainer", color: "indigo", challenge: "Building recall and credibility beyond a book launch.", solution: "Brand positioning, personal brand engines, strategic content buckets, high-converting video content, and full-funnel campaigns." },
     { type: "doctors", title: "Doctors", tag: "Retainer", color: "teal", challenge: "Turning medical expertise into trust and consistent patient acquisition.", solution: "Audience mapping, positioning frameworks, credibility-led content, ad funnels for leads, and continuous optimization." },
-    { type: "entrepreneurs", title: "Entrepreneurs", tag: "Retainer", color: "yellow", challenge: "Lack of consistent content and distribution to establish authority.", solution: "Content strategy, multi-platform pipelines, and micro-campaigns designed to scale authority and trust." }
+    { type: "entrepreneurs", title: "Entrepreneurs", tag: "Retainer", color: "yellow", challenge: "Lack of consistent content and distribution to establish authority.", solution: "Content strategy, multi-platform pipelines, and micro-campaigns designed to scale authority and trust." },
+    { type: "authors", title: "Authors & Thought Leaders", tag: "Retainer", color: "indigo", challenge: "Building recall and credibility beyond a book launch.", solution: "Brand positioning, personal brand engines, strategic content buckets, high-converting video content, and full-funnel campaigns." },
   ];
 
   const getColorClasses = (color) => {
@@ -362,7 +363,7 @@ const AppShowcase = () => {
           className="grid-container"
           variants={containerVariants}
         >
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.map((industry, index) => (
               <IndustryCard 
                 key={industry.type} 
